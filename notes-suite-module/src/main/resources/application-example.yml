@@ -1,0 +1,58 @@
+# Application
+server:
+  port: #changem
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: false
+
+spring:
+  application:
+    name: changem
+
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:changem/changem
+    username: changem
+    password: changem
+    driver-class-name: org.postgresql.Driver
+
+  # JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  # JWT Configuration
+jwt:
+  secret: changem
+  expiration: changem
+  refresh-expiration: changem
+
+  # OpenAPI/Swagger
+springdoc:
+  api-docs.path: /api-docs
+  swagger-ui.path: /swagger-ui.html
+  swagger-ui.enabled: true
+
+  # CORS (will be configured in code)
+  # Allowed origins: http://localhost:3000, http://localhost:4200
+
+  # Logging
+logging:
+  level:
+    root: INFO
+    com:
+      notessuitemodule: DEBUG
+    org:
+      springframework.security: DEBUG
+  pattern:
+    console: %d{yyyy-MM-dd HH:mm:ss} - %msg%n
