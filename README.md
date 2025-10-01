@@ -6,9 +6,9 @@ Application multi-plateforme complète pour la gestion de notes avec authentific
 
 ```
 notes-suite/
-├── backend-spring/      # API REST Spring Boot
-├── web-frontend/        # Frontend Angular
-├── mobile-app/          # Application mobile Flutter
+├── notes-suite-module/      # API REST Spring Boot
+├── notes-suite-ui/        # Frontend Angular
+├── notes-suitemobile/          # Application mobile Flutter
 ├── docker/              # Configuration Docker
 ├── docker-compose.yml   # Orchestration des services
 └── README.md
