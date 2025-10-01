@@ -61,7 +61,7 @@ docker-compose down
 ### Backend (Spring Boot 3)
 
 **Technologies :**
-- Spring Boot 3.2
+- Spring Boot 3.5.6
 - Spring Security + JWT
 - Spring Data JPA
 - PostgreSQL
