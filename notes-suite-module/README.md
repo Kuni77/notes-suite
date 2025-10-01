@@ -575,13 +575,6 @@ private Long version;
 - [MapStruct](https://mapstruct.org/)
 - [JWT.io](https://jwt.io/)
 
-## 🤝 Contributing
-
-1. Respecter la structure en couches
-2. Utiliser les interfaces pour les services
-3. Écrire des tests pour chaque nouvelle fonctionnalité
-4. Documenter les endpoints avec annotations Swagger
-5. Suivre les conventions de nommage Java
 
 ## ❓ FAQ
 
@@ -607,7 +600,3 @@ spring.jpa.hibernate.ddl-auto=validate
 # ou
 spring.jpa.hibernate.ddl-auto=none
 ```
-
-## 📞 Support
-
-Pour toute question ou problème, ouvrir une issue sur GitHub.
