@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import sn.notes.notessuitemodule.service.dto.response.ApiResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,8 +26,8 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         OutputStream outputStream = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(outputStream, Response
-                .accessDenied()
+        mapper.writeValue(outputStream, ApiResponse
+                .unauthorized()
                 .setMessage("You do not have permission to access this resource.")
                 .setErrors("You do not have permission to access this resource."));
         outputStream.flush();
