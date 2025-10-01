@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: notes-suite-module-test
+
+  # Database Configuration
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # JWT Configuration
+jwt:
+  secret: testSecretKeyForJunitTestsOnly123456789
+  expiration: 3600000
+  refresh-expiration: 7200000
+
+# Disable Swagger in tests
+springdoc:
+  swagger-ui:
+    enabled: false
+
+  # Logging
+logging:
+  level:
+    root: WARN
+    com:
+      notessuitemodule: INFO
+    org:
+      springframework:
+      security: WARN

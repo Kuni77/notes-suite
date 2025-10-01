@@ -39,12 +39,11 @@ jwt:
 
   # OpenAPI/Swagger
 springdoc:
-  api-docs.path: /api-docs
-  swagger-ui.path: /swagger-ui.html
-  swagger-ui.enabled: true
-
-  # CORS (will be configured in code)
-  # Allowed origins: http://localhost:3000, http://localhost:4200
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
 
   # Logging
 logging:
@@ -53,6 +52,7 @@ logging:
     com:
       notessuitemodule: DEBUG
     org:
-      springframework.security: DEBUG
+      springframework:
+        security: DEBUG
   pattern:
     console: %d{yyyy-MM-dd HH:mm:ss} - %msg%n
