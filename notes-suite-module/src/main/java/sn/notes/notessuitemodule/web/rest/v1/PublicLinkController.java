@@ -16,7 +16,7 @@ import sn.notes.notessuitemodule.service.interfaces.PublicLinkService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("")
 @RequiredArgsConstructor
 @Tag(name = "Public Links", description = "Public link management endpoints")
 public class PublicLinkController {

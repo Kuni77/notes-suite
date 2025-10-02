@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import sn.notes.notessuitemodule.domain.Visibility;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 import sn.notes.notessuitemodule.service.criteria.NoteSearchCriteria;
 import sn.notes.notessuitemodule.service.dto.CreateNoteRequest;
 import sn.notes.notessuitemodule.service.dto.NoteResponse;

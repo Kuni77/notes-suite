@@ -2,8 +2,11 @@ package sn.notes.notessuitemodule.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 import sn.notes.notessuitemodule.domain.audit.Auditable;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,10 @@ public class Note extends Auditable<Integer> {
     @Column(nullable = false)
     @Builder.Default
     private Visibility visibility = Visibility.PRIVATE;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoteTag> noteTags = new ArrayList<>();

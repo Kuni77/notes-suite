@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sn.notes.notessuitemodule.domain.Visibility;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 
 @Data
 @Builder

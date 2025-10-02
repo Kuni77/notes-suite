@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sn.notes.notessuitemodule.domain.*;
+import sn.notes.notessuitemodule.domain.enums.Permission;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 import sn.notes.notessuitemodule.exception.BadRequestException;
 import sn.notes.notessuitemodule.exception.ResourceNotFoundException;
 import sn.notes.notessuitemodule.exception.UnauthorizedException;

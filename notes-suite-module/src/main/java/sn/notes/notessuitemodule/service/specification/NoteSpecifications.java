@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import sn.notes.notessuitemodule.domain.*;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 
 import java.util.ArrayList;
 import java.util.List;

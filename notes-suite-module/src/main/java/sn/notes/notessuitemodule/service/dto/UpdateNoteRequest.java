@@ -1,7 +1,7 @@
 package sn.notes.notessuitemodule.service.dto;
 
 import jakarta.validation.constraints.Size;
-import sn.notes.notessuitemodule.domain.Visibility;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 
 import java.util.List;
 

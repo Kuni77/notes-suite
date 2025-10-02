@@ -3,6 +3,7 @@ package sn.notes.notessuitemodule.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import sn.notes.notessuitemodule.domain.audit.Auditable;
+import sn.notes.notessuitemodule.domain.enums.Permission;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity

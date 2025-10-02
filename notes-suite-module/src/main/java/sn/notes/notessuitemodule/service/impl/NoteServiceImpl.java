@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sn.notes.notessuitemodule.domain.*;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 import sn.notes.notessuitemodule.exception.ResourceNotFoundException;
 import sn.notes.notessuitemodule.exception.UnauthorizedException;
 import sn.notes.notessuitemodule.repository.NoteRepository;

@@ -1,6 +1,6 @@
 package sn.notes.notessuitemodule.service.dto;
 
-import sn.notes.notessuitemodule.domain.Permission;
+import sn.notes.notessuitemodule.domain.enums.Permission;
 
 public record ShareResponse(
         Long id,

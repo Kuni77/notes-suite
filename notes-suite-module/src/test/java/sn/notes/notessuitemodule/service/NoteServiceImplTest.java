@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sn.notes.notessuitemodule.domain.Note;
 import sn.notes.notessuitemodule.domain.User;
-import sn.notes.notessuitemodule.domain.Visibility;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 import sn.notes.notessuitemodule.exception.ResourceNotFoundException;
 import sn.notes.notessuitemodule.repository.NoteRepository;
 import sn.notes.notessuitemodule.repository.NoteTagRepository;

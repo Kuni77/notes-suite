@@ -1,4 +1,4 @@
-package sn.notes.notessuitemodule.domain;
+package sn.notes.notessuitemodule.domain.enums;
 
 public enum Visibility {
     PRIVATE,

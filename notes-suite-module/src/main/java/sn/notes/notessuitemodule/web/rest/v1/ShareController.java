@@ -17,7 +17,7 @@ import sn.notes.notessuitemodule.service.interfaces.ShareService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/notes")
+@RequestMapping("/notes")
 @RequiredArgsConstructor
 @Tag(name = "Shares", description = "Note sharing endpoints")
 @SecurityRequirement(name = "bearerAuth")

@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public abstract class Auditable<T> {
     @CreatedBy
@@ -17,7 +18,7 @@ public abstract class Auditable<T> {
     @org.springframework.data.annotation.CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
-    protected Timestamp createdAt;
+    protected LocalDateTime  createdAt;
 
     @LastModifiedBy
     @Column(name = "modified_by")
@@ -25,5 +26,5 @@ public abstract class Auditable<T> {
 
     @LastModifiedDate
     @Column(name = "modified_at")
-    protected Timestamp lastModifiedAt;
+    protected LocalDateTime lastModifiedAt;
 }

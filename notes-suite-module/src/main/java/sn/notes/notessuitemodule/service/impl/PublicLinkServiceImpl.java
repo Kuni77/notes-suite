@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sn.notes.notessuitemodule.domain.Note;
 import sn.notes.notessuitemodule.domain.PublicLink;
 import sn.notes.notessuitemodule.domain.User;
-import sn.notes.notessuitemodule.domain.Visibility;
+import sn.notes.notessuitemodule.domain.enums.Visibility;
 import sn.notes.notessuitemodule.exception.ResourceNotFoundException;
 import sn.notes.notessuitemodule.exception.UnauthorizedException;
 import sn.notes.notessuitemodule.repository.NoteRepository;
