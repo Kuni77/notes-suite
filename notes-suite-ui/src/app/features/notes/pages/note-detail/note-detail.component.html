@@ -1,0 +1,206 @@
+<div class="max-w-4xl mx-auto animate-fade-in">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+    <svg class="animate-spin h-8 w-8 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading && note">
+    <!-- Header -->
+    <div class="mb-6 flex items-start justify-between">
+      <button
+        (click)="goBack()"
+        class="flex items-center text-gray-600 hover:text-gray-900 transition">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Notes
+      </button>
+      
+      <div class="flex space-x-2">
+        <button
+          (click)="openShareDialog()"
+          class="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition"
+          title="Share">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+          </svg>
+        </button>
+        <button
+          (click)="openPublicLinkDialog()"
+          class="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition"
+          title="Public Link">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+          </svg>
+        </button>
+        <button
+          (click)="editNote()"
+          class="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition"
+          title="Edit">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+        </button>
+        <button
+          (click)="deleteNote()"
+          class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+          title="Delete">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Note Card -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <!-- Title & Metadata -->
+      <div class="p-8 border-b">
+        <div class="flex items-start justify-between mb-4">
+          <h1 class="text-3xl font-bold text-gray-900">{{ note.title }}</h1>
+          <span
+            [class]="'px-3 py-1 text-sm font-medium rounded-full ' + getVisibilityBadgeClass(note.visibility)">
+            {{ note.visibility }}
+          </span>
+        </div>
+
+        <!-- Tags -->
+        <div *ngIf="note.tags.length > 0" class="flex flex-wrap gap-2 mb-4">
+          <span
+            *ngFor="let tag of note.tags"
+            class="px-3 py-1 bg-primary-100 text-primary-800 text-sm rounded-full">
+            #{{ tag }}
+          </span>
+        </div>
+
+        <!-- Metadata -->
+        <div class="flex items-center space-x-6 text-sm text-gray-600">
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            {{ note.ownerEmail }}
+          </div>
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Updated {{ formatDate(note.updatedAt) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="p-8 prose max-w-none">
+        <div class="whitespace-pre-wrap">{{ note.contentMd }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Dialog -->
+  <div *ngIf="showShareDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full animate-slide-in-up">
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-xl font-bold text-gray-900">Share Note</h3>
+          <button (click)="closeShareDialog()" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Share with User Form -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Share with user</label>
+          <div class="flex gap-2">
+            <input
+              type="email"
+              [(ngModel)]="shareEmail"
+              placeholder="user@example.com"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <button
+              (click)="shareWithUser()"
+              [disabled]="!shareEmail.trim()"
+              class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition">
+              Share
+            </button>
+          </div>
+        </div>
+
+        <!-- Shared Users List -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-700 mb-2">Shared with</h4>
+          <div *ngIf="shares.length === 0" class="text-sm text-gray-500 italic">
+            Not shared with anyone yet
+          </div>
+          <div *ngIf="shares.length > 0" class="space-y-2">
+            <div *ngFor="let share of shares" class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="text-sm text-gray-900">{{ share.sharedWithEmail }}</span>
+              <button
+                (click)="removeShare(share.id)"
+                class="text-red-600 hover:text-red-800 text-sm">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Public Link Dialog -->
+  <div *ngIf="showPublicLinkDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full animate-slide-in-up">
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-xl font-bold text-gray-900">Public Links</h3>
+          <button (click)="closePublicLinkDialog()" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Create Public Link -->
+        <div class="mb-6">
+          <button
+            (click)="createPublicLink()"
+            class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+            Generate New Public Link
+          </button>
+        </div>
+
+        <!-- Public Links List -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-700 mb-2">Active Links</h4>
+          <div *ngIf="publicLinks.length === 0" class="text-sm text-gray-500 italic">
+            No public links created yet
+          </div>
+          <div *ngIf="publicLinks.length > 0" class="space-y-2">
+            <div *ngFor="let link of publicLinks" class="p-3 bg-gray-50 rounded-lg">
+              <div class="flex justify-between items-start mb-2">
+                <code class="text-xs text-gray-600 break-all">{{ link.urlToken }}</code>
+                <button
+                  (click)="deletePublicLink(link.id)"
+                  class="text-red-600 hover:text-red-800 text-sm ml-2">
+                  Delete
+                </button>
+              </div>
+              <button
+                (click)="copyPublicLink(link)"
+                class="text-sm text-primary-600 hover:text-primary-800">
+                Copy full link
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
