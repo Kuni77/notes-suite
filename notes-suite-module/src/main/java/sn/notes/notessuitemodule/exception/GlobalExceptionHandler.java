@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.forbidden().setMessage(ex.getMessage()));
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException ex) {
+    @ExceptionHandler(sn.notes.notessuitemodule.exception.BadRequestException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBadRequest(sn.notes.notessuitemodule.exception.BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.badRequest().setMessage(ex.getMessage()));
     }
