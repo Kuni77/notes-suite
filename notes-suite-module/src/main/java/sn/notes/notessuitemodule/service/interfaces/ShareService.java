@@ -1,5 +1,8 @@
 package sn.notes.notessuitemodule.service.interfaces;
 
+import sn.notes.notessuitemodule.domain.Note;
+import sn.notes.notessuitemodule.domain.Share;
+import sn.notes.notessuitemodule.domain.User;
 import sn.notes.notessuitemodule.service.dto.ShareResponse;
 import sn.notes.notessuitemodule.service.dto.ShareWithUserRequest;
 

@@ -10,4 +10,5 @@ import java.util.List;
 public interface ShareRepository extends JpaRepository<Share, Long> {
     boolean existsByNoteAndSharedWithUser(Note note, User sharedWithUser);
     List<Share> findByNote(Note note);
+    List<Share> findBySharedWithUser(User sharedWithUser);
 }

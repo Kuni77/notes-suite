@@ -12,4 +12,5 @@ public interface NoteService {
     NoteResponse getNoteById(Long id, String userEmail);
     NoteResponse updateNote(Long id, UpdateNoteRequest request, String userEmail);
     void deleteNote(Long id, String userEmail);
+    Page<NoteResponse> getSharedNotes(NoteSearchCriteria criteria, String userEmail);
 }

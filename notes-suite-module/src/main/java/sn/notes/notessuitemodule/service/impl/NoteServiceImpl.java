@@ -1,5 +1,8 @@
 package sn.notes.notessuitemodule.service.impl;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import sn.notes.notessuitemodule.exception.ResourceNotFoundException;
 import sn.notes.notessuitemodule.exception.UnauthorizedException;
 import sn.notes.notessuitemodule.repository.NoteRepository;
 import sn.notes.notessuitemodule.repository.NoteTagRepository;
+import sn.notes.notessuitemodule.repository.ShareRepository;
 import sn.notes.notessuitemodule.repository.TagRepository;
 import sn.notes.notessuitemodule.service.criteria.NoteSearchCriteria;
 import sn.notes.notessuitemodule.service.dto.CreateNoteRequest;
@@ -25,7 +29,9 @@ import sn.notes.notessuitemodule.service.interfaces.UserService;
 import sn.notes.notessuitemodule.service.mapper.NoteMapper;
 import sn.notes.notessuitemodule.service.specification.NoteSpecifications;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +41,7 @@ public class NoteServiceImpl implements NoteService {
     private final UserService userService;
     private final TagRepository tagRepository;
     private final NoteTagRepository noteTagRepository;
+    private final ShareRepository shareRepository;
     private final NoteMapper noteMapper;
 
     @Override
@@ -157,6 +164,68 @@ public class NoteServiceImpl implements NoteService {
         log.info("Note deleted successfully: {}", id);
     }
 
+    @Transactional(readOnly = true)
+    public Page<NoteResponse> getSharedNotes(NoteSearchCriteria criteria, String userEmail) {
+        log.info("Getting notes shared with user: {} with criteria: {}", userEmail, criteria);
+
+        User user = userService.findByEmail(userEmail);
+
+        // Récupérer les shares de l'utilisateur
+        List<Share> shares = shareRepository.findBySharedWithUser(user);
+        List<Long> sharedNoteIds = shares.stream()
+                .map(share -> share.getNote().getId())
+                .collect(Collectors.toList());
+
+        if (sharedNoteIds.isEmpty()) {
+            return Page.empty();
+        }
+
+        // Créer une specification pour les notes partagées avec filtres
+        Specification<Note> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // 1. Filter by shared note IDs
+            predicates.add(root.get("id").in(sharedNoteIds));
+
+            // 2. Filter by query (search in title)
+            if (criteria.getQuery() != null && !criteria.getQuery().isBlank()) {
+                String searchPattern = "%" + criteria.getQuery().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("title")),
+                        searchPattern
+                ));
+            }
+
+            // 3. Filter by tag
+            if (criteria.getTag() != null && !criteria.getTag().isBlank()) {
+                Join<Note, NoteTag> noteTagJoin = root.join("noteTags", JoinType.INNER);
+                Join<NoteTag, Tag> tagJoin = noteTagJoin.join("tag", JoinType.INNER);
+                predicates.add(criteriaBuilder.equal(
+                        criteriaBuilder.lower(tagJoin.get("label")),
+                        criteria.getTag().toLowerCase()
+                ));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        // Sorting
+        Sort.Direction direction = "asc".equalsIgnoreCase(criteria.getSortDirection())
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        String sortBy = criteria.getSortBy() != null ? criteria.getSortBy() : "updatedAt";
+
+        Pageable pageable = PageRequest.of(
+                criteria.getPageNumber(),
+                criteria.getPageSize(),
+                Sort.by(direction, sortBy)
+        );
+
+        Page<Note> notesPage = noteRepository.findAll(spec, pageable);
+        return notesPage.map(noteMapper::toResponse);
+    }
+
     // Méthodes utilitaires privées
 
     private Note findNoteById(Long id) {
@@ -172,10 +241,18 @@ public class NoteServiceImpl implements NoteService {
 
     private void validateNoteAccess(Note note, User user) {
         // L'utilisateur peut accéder à la note s'il en est le propriétaire
-        // TODO: Ajouter la vérification des partages (sera géré dans ShareService)
-        if (!note.getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You don't have permission to access this note");
+        if (note.getOwner().getId().equals(user.getId())) {
+            return;
         }
+
+        // Ou si la note a été partagée avec lui
+        boolean hasSharedAccess = shareRepository.existsByNoteAndSharedWithUser(note, user);
+
+        if (hasSharedAccess) {
+            return;
+        }
+
+        throw new UnauthorizedException("You don't have permission to access this note");
     }
 
     private void attachTagsToNote(Note note, List<String> tagLabels) {

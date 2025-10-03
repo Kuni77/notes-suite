@@ -75,6 +75,37 @@ public class NoteController {
                         .setMessage("Notes retrieved successfully"));
     }
 
+    @GetMapping("/shared")
+    @Operation(summary = "Get notes shared with the authenticated user")
+    public ResponseEntity<ApiResponse<List<NoteResponse>>> getSharedNotes(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String tag,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "updatedAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            Authentication authentication) {
+
+        String userEmail = authentication.getName();
+
+        NoteSearchCriteria criteria = NoteSearchCriteria.builder()
+                .query(query)
+                .tag(tag)
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .sortDirection(sortDirection)
+                .build();
+
+        Page<NoteResponse> notesPage = noteService.getSharedNotes(criteria, userEmail);
+
+        return ResponseEntity.ok(
+                ApiResponse.<List<NoteResponse>>ok()
+                        .setData(notesPage.getContent())
+                        .setMetadata(PageMetadata.from(notesPage))
+                        .setMessage("Shared notes retrieved successfully"));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get note by ID")
     public ResponseEntity<ApiResponse<NoteResponse>> getNoteById(
