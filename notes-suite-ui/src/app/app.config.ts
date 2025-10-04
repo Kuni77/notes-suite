@@ -21,6 +21,5 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([jwtInterceptor, errorInterceptor])
     ),
-    provideClientHydration(),
   ]
 };

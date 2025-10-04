@@ -34,7 +34,7 @@ export class ShareService {
 
   removeShare(shareId: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(
-      `${this.API_URL}/shares/${shareId}`
+      `${this.API_URL}/notes/shares/${shareId}`
     );
   }
 

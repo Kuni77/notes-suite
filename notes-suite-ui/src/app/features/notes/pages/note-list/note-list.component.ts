@@ -6,6 +6,7 @@ import { NoteService } from '../../../../core/services/note.service';
 import { Note, NoteSearchCriteria, Visibility } from '../../../../core/models/note.model';
 import { PageMetadata } from '../../../../core/models/api-response.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-note-list',
@@ -17,6 +18,10 @@ import { ToastrService } from 'ngx-toastr';
 export class NoteListComponent implements OnInit {
   notes: Note[] = [];
   isLoading = false;
+  currentUserEmail = '';
+  
+  // Tab selection
+  activeTab: 'my-notes' | 'shared-with-me' = 'my-notes';
   
   // Filters
   searchQuery = '';
@@ -40,14 +45,39 @@ export class NoteListComponent implements OnInit {
   constructor(
     private noteService: NoteService,
     private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private authService: AuthService
+  ) {
+    // Récupérer l'email de l'utilisateur connecté
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.currentUserEmail = user.email;
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadNotes();
   }
 
+  switchTab(tab: 'my-notes' | 'shared-with-me'): void {
+    this.activeTab = tab;
+    this.currentPage = 0;
+    this.searchQuery = '';
+    this.selectedVisibility = '';
+    this.selectedTag = '';
+    this.loadNotes();
+  }
+
   loadNotes(): void {
+    if (this.activeTab === 'shared-with-me') {
+      this.loadSharedNotes();
+    } else {
+      this.loadMyNotes();
+    }
+  }
+
+  loadMyNotes(): void {
     this.isLoading = true;
     
     const criteria: NoteSearchCriteria = {
@@ -69,6 +99,32 @@ export class NoteListComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         this.toastr.error('Failed to load notes', 'Error');
+      }
+    });
+  }
+
+  loadSharedNotes(): void {
+    this.isLoading = true;
+
+    // Appliquer les filtres également pour les notes partagées
+    const criteria: NoteSearchCriteria = {
+      query: this.searchQuery || undefined,
+      tag: this.selectedTag || undefined,
+      page: this.currentPage,
+      size: this.pageSize,
+      sortBy: 'updatedAt',
+      sortDirection: 'desc'
+    };
+
+    this.noteService.getSharedNotes(criteria.page, criteria.size, criteria.query, criteria.tag).subscribe({
+      next: (response) => {
+        this.notes = response.data || [];
+        this.pageMetadata = response.metadata;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.toastr.error('Failed to load shared notes', 'Error');
       }
     });
   }
@@ -139,5 +195,9 @@ export class NoteListComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  isOwner(note: Note): boolean {
+    return note.ownerEmail === this.currentUserEmail;
   }
 }

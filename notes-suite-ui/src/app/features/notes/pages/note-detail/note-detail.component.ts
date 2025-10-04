@@ -7,6 +7,7 @@ import { Note, Visibility } from '../../../../core/models/note.model';
 import { ShareResponse, PublicLinkResponse } from '../../../../core/models/share.model';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-note-detail',
@@ -23,6 +24,7 @@ export class NoteDetailComponent implements OnInit {
   shares: ShareResponse[] = [];
   publicLinks: PublicLinkResponse[] = [];
   shareEmail = '';
+  currentUserEmail = '';
 
   Visibility = Visibility;
 
@@ -31,8 +33,16 @@ export class NoteDetailComponent implements OnInit {
     private shareService: ShareService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private authService: AuthService
+  ) {
+    // Récupérer l'email de l'utilisateur connecté
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.currentUserEmail = user.email;
+      }
+    });
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -213,5 +223,9 @@ export class NoteDetailComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/notes']);
+  }
+
+  isOwner(): boolean {
+    return this.note?.ownerEmail === this.currentUserEmail;
   }
 }

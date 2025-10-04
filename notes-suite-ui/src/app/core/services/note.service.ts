@@ -32,6 +32,18 @@ export class NoteService {
     return this.http.get<ApiResponse<Note[]>>(this.API_URL, { params });
   }
 
+  getSharedNotes(page: number = 0, size: number = 10, query?: string, tag?: string): Observable<ApiResponse<Note[]>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    // Ajouter les filtres optionnels
+    if (query) params = params.set('query', query);
+    if (tag) params = params.set('tag', tag);
+
+    return this.http.get<ApiResponse<Note[]>>(`${this.API_URL}/shared`, { params });
+  }
+
   getNoteById(id: number): Observable<ApiResponse<Note>> {
     return this.http.get<ApiResponse<Note>>(`${this.API_URL}/${id}`);
   }
