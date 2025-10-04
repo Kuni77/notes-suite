@@ -137,8 +137,12 @@ public class NoteServiceImpl implements NoteService {
         }
 
         if (request.tags() != null) {
-            // Supprimer les anciens tags
-            noteTagRepository.deleteByNote(note);
+            List<NoteTag> oldNoteTags = noteTagRepository.findByNote(note);
+
+            // Supprimer en batch
+            if (!oldNoteTags.isEmpty()) {
+                noteTagRepository.deleteAllInBatch(oldNoteTags);
+            }
             // Ajouter les nouveaux tags
             attachTagsToNote(note, request.tags());
         }

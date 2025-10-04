@@ -16,7 +16,7 @@ public interface PublicLinkMapper {
     List<PublicLinkResponse> toResponseList(List<PublicLink> publicLinks);
 
     default String buildPublicUrl(String urlToken) {
-        return "/api/v1/p/" + urlToken;
+        return urlToken;
     }
 
 }
