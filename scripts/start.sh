@@ -6,7 +6,7 @@ echo "🚀 Starting Notes Application..."
 mkdir -p docker
 
 # Vérifier que docker-compose.yml existe
-if [ ! -f "docker-compose.yml" ]; then
+if [ ! -f "../docker-compose.yml" ]; then
     echo "❌ docker-compose.yml not found!"
     exit 1
 fi
