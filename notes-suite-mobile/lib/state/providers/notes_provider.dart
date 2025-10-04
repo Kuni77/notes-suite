@@ -42,8 +42,35 @@ class NotesNotifier extends StateNotifier<NotesState> {
   final SyncService _syncService;
 
   NotesNotifier(this._noteService, this._syncService) : super(NotesState()) {
-    loadNotes();
-    _updateSyncStatus();
+    _initializeNotes();
+  }
+
+  // Initialisation avec sync
+  Future<void> _initializeNotes() async {
+
+    // D'abord charger depuis le cache local
+    await loadNotes();
+
+    // Puis sync avec le serveur en arrière-plan
+    _syncWithServer();
+  }
+
+  // Sync avec le serveur (non bloquant)
+  Future<void> _syncWithServer() async {
+    try {
+
+      // Sync pending operations
+      await _syncService.syncPendingOperations();
+
+      // Recharger les notes depuis le serveur
+      final notes = await _noteService.getNotes();
+
+      state = state.copyWith(notes: notes);
+
+      await _updateSyncStatus();
+    } catch (e) {
+      // Ne pas bloquer l'app si le sync échoue
+    }
   }
 
   // Load notes (My Notes)
@@ -98,14 +125,13 @@ class NotesNotifier extends StateNotifier<NotesState> {
     required String title,
     required String contentMd,
     List<String> tags = const [],
-    Visibility visibility = Visibility.PRIVATE,
   }) async {
     try {
       final note = await _noteService.createNote(
         title: title,
         contentMd: contentMd,
         tags: tags,
-        visibility: visibility,
+        // ❌ PAS de visibility ici
       );
 
       // Add to local state
@@ -127,7 +153,7 @@ class NotesNotifier extends StateNotifier<NotesState> {
     required String title,
     required String contentMd,
     List<String> tags = const [],
-    Visibility visibility = Visibility.PRIVATE,
+    Visibility? visibility, // ✅ Optionnel pour UPDATE
   }) async {
     try {
       final updatedNote = await _noteService.updateNote(
@@ -135,7 +161,7 @@ class NotesNotifier extends StateNotifier<NotesState> {
         title: title,
         contentMd: contentMd,
         tags: tags,
-        visibility: visibility,
+        visibility: visibility!, // ✅ Peut être modifié ici
       );
 
       // Update in local state
@@ -174,13 +200,18 @@ class NotesNotifier extends StateNotifier<NotesState> {
     state = state.copyWith(isRefreshing: true);
 
     try {
+
       // Sync pending operations
       await _syncService.manualSync();
 
-      // Reload notes
-      await loadNotes();
+      // Recharger depuis le serveur (force online)
+      final notes = await _noteService.getNotes();
 
-      state = state.copyWith(isRefreshing: false);
+      state = state.copyWith(
+        notes: notes,
+        isRefreshing: false,
+      );
+
     } catch (e) {
       state = state.copyWith(
         isRefreshing: false,

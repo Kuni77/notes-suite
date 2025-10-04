@@ -41,14 +41,29 @@ class Note {
         orElse: () => Visibility.PRIVATE,
       ),
       ownerEmail: json['ownerEmail'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : (json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now()),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(),
       isSynced: true,
     );
   }
 
   // To JSON (API request)
   Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'contentMd': contentMd,
+      'tags': tags,
+    };
+  }
+
+  // To JSON for UPDATE
+  Map<String, dynamic> toUpdateJson() {
     return {
       'title': title,
       'contentMd': contentMd,
