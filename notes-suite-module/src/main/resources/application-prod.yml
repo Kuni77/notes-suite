@@ -13,7 +13,7 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/notesdb
+    url: jdbc:postgresql://db:5432/notesdb
     username: ${DB_USERNAME:notesuser}
     password: ${DB_PASSWORD:notespass}
     driver-class-name: org.postgresql.Driver
